@@ -2,12 +2,13 @@ var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var exphbs = require('express-handlebars');
-
+var expressValidator = require('express-validator');
 var path = require('path');
 var app = express();
 
 var index=require('./routes/index');
 var users = require('./routes/users')
+
 
 
 var hbs = exphbs.create({
@@ -22,15 +23,23 @@ var hbs = exphbs.create({
 });
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
-app.use('/',index,);
-app.use('/users',users);
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname,  'public')));
 app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false }
-  }))
+  }));
+
+
+app.use(expressValidator());
+app.use('/',index,);
+app.use('/users',users);
 
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function(req, res){
@@ -41,7 +50,7 @@ app.set("PORT", process.env.PORT || 5001);
 app.listen(app.get('PORT'),()=>{
     session.username='Guest';
     session.online='Offline';
-    session.skin='skin-green'
+    session.skin='skin-green';
     console.log("Listening on port: "+app.get("PORT"));
 });
 
