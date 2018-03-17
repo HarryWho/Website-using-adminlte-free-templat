@@ -1,3 +1,5 @@
+
+//#region GLOBAL REQUIRES
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
@@ -10,9 +12,11 @@ var app = express();
 var flash = require('flash');
 var index=require('./routes/index');
 var users = require('./routes/users')
+//#endregion
 
+//#region MIDDLEWARE CONFIGS
 
-
+//#region  HANDLEBAR SETUP
 var hbs = exphbs.create({
     // Specify helpers which are only registered on this instance.
     helpers: {
@@ -25,6 +29,11 @@ var hbs = exphbs.create({
 
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
+
+//#endregion
+
+//#region BODYPARSER PASSPORT AND SESSION MIDDLEWARE
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -40,6 +49,9 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+//#endregion
+
+//#region FLASH MESSAGING
 // connect flash 
 app.use(flash());
 
@@ -52,15 +64,26 @@ app.use(function(req, res, next){
     next();
 });
 
+//#endregion
+
+//#region VALIDATION AND ROUTING
 app.use(expressValidator());
 app.use('/',index,);
 app.use('/users',users);
 
+//#endregion
+
+//#endregion
+
+//#region 404 AND TODO 500 ERROR HANDLING
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function(req, res){
     res.render('404');
   });
 
+  //#endregion
+
+//#region sTARTING THE SERVER
 app.set("PORT", process.env.PORT || 5001);
 app.listen(app.get('PORT'),()=>{
     session.username='Guest';
@@ -69,4 +92,6 @@ app.listen(app.get('PORT'),()=>{
     session.loggedin=false;
     console.log("Listening on port: "+app.get("PORT"));
 });
+
+//#endregion
 

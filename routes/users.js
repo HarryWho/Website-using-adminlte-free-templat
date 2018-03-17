@@ -1,5 +1,5 @@
 
-//#region REQUIRES
+//#region GLOBAL REQUIRES
 var express=require('express');
 var session = require('express-session');
 var mongoose = require('mongoose');
@@ -23,6 +23,7 @@ app.get('/logout',(req,res,next)=>{
     req.logOut();
     session.username = 'Guest';
     session.permission=0;
+    session.online="Offline";
     res.render('home',{title:'Home'});
 });
 //#endregion
