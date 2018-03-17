@@ -137,12 +137,11 @@
             </li>
             <!-- Menu Footer-->
             <li class="user-footer">
-            <div class="pull-left">
-                <a href="/users/register" class="btn btn-default btn-flat">Register</a>
-            </div>
-            <div class="pull-right">
-                <a href="/users/login" class="btn btn-default btn-flat">Sign In</a>
-            </div>
+            {{#if user}}
+                    {{>logouthelper}}
+               {{else}}
+                    {{>loginhelper}}
+            {{/if}}
             </li>
         </ul>
         </li>

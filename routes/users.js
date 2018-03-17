@@ -1,19 +1,83 @@
+
+//#region REQUIRES
 var express=require('express');
 var session = require('express-session');
-
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/AdminLTEDB');
 var db = mongoose.connection;
 var app = express.Router();
 var session = require("express-session");
 var User = require('../models/user');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+//#endregion
 
+//#region GET REQUESTS
 app.get('/login',(req,res,next)=>{
     res.render('login',{title:'Login'});
 });
 app.get('/register', (req, res, next)=>{
     res.render('register',{title:'Register'});
 });
+app.get('/logout',(req,res,next)=>{
+    req.logOut();
+    session.username = 'Guest';
+    session.permission=0;
+    res.render('home',{title:'Home'});
+});
+//#endregion
+
+//#region PASSPORT FUNCTIONS
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    User.getUserByUsername(username, function(err, user) {
+        if(err) throw err;
+        if(!user){
+            console.log("Unknown User");
+            return done(null,false,{message: 'Unknown username'});
+            
+        }
+        User.comparePassword(password, user.password, function(err, isMatch){
+            if(err) throw err;
+            if(!isMatch){
+                console.log("Wrong password");
+                return done(null,false,{message: "Incorrect Pasword"});
+                
+            }else{
+                session.username = user.username;
+                session.permission=user.permission;
+                session.online='Online'
+               
+                return done(null,user);
+                
+                
+                
+            }
+        });
+    });
+  }
+));
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+  });
+
+
+  passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user) {
+      done(err, user);
+    });
+  });
+//#endregion
+
+//#region POST REQUESTS
+app.post('/login',
+  passport.authenticate('local', {successRedirect:'/', failureRedirect:'/users/login', failureFlash:true}),
+  function(req, res) {
+    // If this function gets called, authentication was successful.
+    // `req.user` contains the authenticated user.
+    res.redirect('/');
+    
+  });
 
 app.post('/register',(req,res,next)=>{
     
@@ -41,4 +105,8 @@ app.post('/register',(req,res,next)=>{
         });
     }
 });
+
+//#endregion
+
+
 module.exports = app;
