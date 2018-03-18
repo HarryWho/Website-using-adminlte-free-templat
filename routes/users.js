@@ -1,16 +1,14 @@
 
-//#region GLOBAL REQUIRES
+
 var express=require('express');
 var session = require('express-session');
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/AdminLTEDB');
-var db = mongoose.connection;
+
 var app = express.Router();
-var session = require("express-session");
+
 var User = require('../models/user');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-//#endregion
+
 
 //#region GET REQUESTS
 app.get('/login',(req,res,next)=>{
@@ -19,12 +17,18 @@ app.get('/login',(req,res,next)=>{
 app.get('/register', (req, res, next)=>{
     res.render('register',{title:'Register'});
 });
-app.get('/logout',(req,res,next)=>{
-    req.logOut();
+app.get('/logout', (req,res,next)=>{
+    
+    
+    req.logout();
+
+    
     session.username = 'Guest';
     session.permission=0;
     session.online="Offline";
-    res.render('home',{title:'Home'});
+    res.redirect('/');
+    
+
 });
 //#endregion
 
@@ -34,14 +38,14 @@ passport.use(new LocalStrategy(
     User.getUserByUsername(username, function(err, user) {
         if(err) throw err;
         if(!user){
-            console.log("Unknown User");
+            
             return done(null,false,{message: 'Unknown username'});
             
         }
         User.comparePassword(password, user.password, function(err, isMatch){
             if(err) throw err;
             if(!isMatch){
-                console.log("Wrong password");
+                
                 return done(null,false,{message: "Incorrect Pasword"});
                 
             }else{
@@ -76,7 +80,7 @@ app.post('/login',
   function(req, res) {
     // If this function gets called, authentication was successful.
     // `req.user` contains the authenticated user.
-    res.redirect('/');
+    //res.redirect('/');
     
   });
 
@@ -102,7 +106,7 @@ app.post('/register',(req,res,next)=>{
         User.createUser(user,(err,user)=>{
             if(err) throw err;
             console.log(user);
-            res.render('home',{title:user});
+            res.render('home',{title:"Home"});
         });
     }
 });

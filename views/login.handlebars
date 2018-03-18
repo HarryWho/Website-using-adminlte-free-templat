@@ -1,13 +1,34 @@
+<!-- #region CSS FOR THIS PAGE-->
 <!-- iCheck -->
     <link href="/dist/blue.css" rel="stylesheet" type="text/css" />
+
+<!-- #endregion -->
+
+<!-- #region LOGINBOX -->
+
 <div class="login-box">
+
+<!-- #region LOGO -->
+
   <div class="login-logo">
     <a href="/"><b>Admin</b>LTE</a>
   </div>
   <!-- /.login-logo -->
+
+<!-- #endregion -->
+
+<!-- #region LOGIN BOX BODY -->
+
   <div class="login-box-body">
     <p class="login-box-msg">Sign in to start your session</p>
-
+      {{#if error}}
+          
+            <div class="alert alert-danger">
+                {{error}}
+            </div>
+         
+      {{/if}}
+<!-- #region FORM -->
     <form action="/users/login" method="post">
       <div class="form-group has-feedback">
         <input type="text" name="username" class="form-control" placeholder="Email">
@@ -32,7 +53,9 @@
         <!-- /.col -->
       </div>
     </form>
+<!-- #endregion -->
 
+<!-- #region SOCIAL AUTH LINKS-->
     <div class="social-auth-links text-center">
       <!--
       <p>- OR -</p>
@@ -43,11 +66,18 @@
       -->
     </div>
     <!-- /.social-auth-links -->
+<!-- #endregion -->
 
+<!-- #region FORGOT PASSWORD AND REGISTER NEW USER LINKS -->
     <a href="#">I forgot my password</a><br>
     <a href="/users/register" class="text-center">Register a new membership</a>
 
+
   </div>
   <!-- /.login-box-body -->
+<!-- #endregion -->
+
 </div>
-<!-- /.login-box -->
+
+<!-- #endregion -->
+
