@@ -1,5 +1,5 @@
 
-
+//#region REQUIRES
 var express=require('express');
 var session = require('express-session');
 
@@ -8,7 +8,7 @@ var app = express.Router();
 var User = require('../models/user');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-
+//#endregion
 
 //#region GET REQUESTS
 app.get('/login',(req,res,next)=>{
@@ -18,17 +18,11 @@ app.get('/register', (req, res, next)=>{
     res.render('register',{title:'Register'});
 });
 app.get('/logout', (req,res,next)=>{
-    
-    
     req.logout();
-
-    
     session.username = 'Guest';
     session.permission=0;
     session.online="Offline";
     res.redirect('/');
-    
-
 });
 //#endregion
 
